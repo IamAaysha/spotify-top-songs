@@ -1,0 +1,136 @@
+/* 
+Dataset: Spotify Top 50 Songs in 2021
+Source: https://www.kaggle.com/datasets/equinxx/spotify-top-50-songs-in-2021
+Query Editor: SQLite 3
+*/ 
+
+/* 
+Use pitch-class integer notation to assign a primary key to each song. 
+Pitch-class integer notation source: https://smbutterfield.github.io/ibmt17-18/22-intro-to-non-diatonic-materials/b2-tx-pcintnotation.html
+*/ 
+
+with notation as (
+    select  
+        id,
+        case
+            when song_key = 0 and song_mode = 1 then 'C Major'
+            when song_key = 0 and song_mode = 0 then 'C Minor'
+            when song_key = 1 and song_mode = 1 then 'C#/Db Major' 
+            when song_key = 1 and song_mode = 0 then 'C#/Db Minor'
+            when song_key = 2 and song_mode = 1 then 'D Major'
+            when song_key = 2 and song_mode = 0 then 'D Minor'
+            when song_key = 3 and song_mode = 1 then 'D#/Eb Major'
+            when song_key = 3 and song_mode = 0 then 'D#/Eb Minor'
+            when song_key = 4 and song_mode = 1 then 'E Major'
+            when song_key = 4 and song_mode = 0 then 'E Minor'
+            when song_key = 5 and song_mode = 1 then 'F Major'
+            when song_key = 5 and song_mode = 0 then 'F Minor'
+            when song_key = 6 and song_mode = 1 then 'F#/Gb Major'
+            when song_key = 6 and song_mode = 0 then 'F#/Gb Minor'
+            when song_key = 7 and song_mode = 1 then 'G Major'
+            when song_key = 7 and song_mode = 0 then 'G Minor'
+            when song_key = 8 and song_mode = 1 then 'G#/Ab Major'
+            when song_key = 8 and song_mode = 0 then 'G#/Ab Minor'
+            when song_key = 9 and song_mode = 1 then 'A Major'
+            when song_key = 9 and song_mode = 0 then 'A Minor'
+            when song_key = 10 and song_mode = 1 then 'A#/Bb Major'
+            when song_key = 10 and song_mode = 0 then 'A#/Bb Minor'
+            when song_key = 11 and song_mode = 1 then 'B Major'
+            when song_key = 11 and song_mode = 0 then 'B Minor'
+        end as key
+    from bit_db.spotifydata
+)
+
+select
+    notation.key, 
+    count(d.id) as total
+from bit_db.spotifydata as d
+
+left join notation 
+on d.id = notation.id
+
+group by notation.key
+
+order by total desc;
+
+/* 
+Create a table with the popularity rankings for each song key. 
+Song keys ranked by popularity source: https://www.hooktheory.com/cheat-sheet/key-popularity
+*/ 
+
+create table bit_db.popular_song_keys (
+    id integer primary key, 
+    song_key varchar not null, 
+    popularity integer not null); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('C Major', 1); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('D Major', 2); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('G Major', 3); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('A Major', 4);
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('E Major', 5);
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('A Minor', 6);
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('F Major', 7); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('C Minor', 8); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('E Minor', 9);
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('D Minor', 10); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('D#/Eb Major', 11); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('G Minor', 12); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('A#/Bb Major', 13); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('B Minor', 14); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('F#/Gb Minor', 15);
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('F Minor', 16);
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('C#/Db Major', 17); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('F#/Gb Major', 18);
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('B Major', 19);
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('C#/Db Minor', 20); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('D#/Eb Minor', 21);
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('G#/Ab Major', 22);
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('A#/Bb Minor', 23); 
+
+insert into bit_db.popular_song_keys (song_key, popularity)
+values ('G#/Ab Minor', 24);
